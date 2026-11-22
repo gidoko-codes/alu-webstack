@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Displays the record type and destination of the subdomains of a domain
+display_info () {
+    local sub="$1"
+    local domain="$2"
+    dig "$sub.$domain" | grep -A1 'ANSWER SECTION:' | tail -1 | awk -v s="$sub" '{print "The subdomain " s " is a " $4 " record and points to " $5}'
+}
+
+if [ "$#" -eq 1 ]; then
+    for sub in www lb-01 web-01 web-02; do
+        display_info "$sub" "$1"
+    done
+elif [ "$#" -ge 2 ]; then
+    display_info "$2" "$1"
+fi
